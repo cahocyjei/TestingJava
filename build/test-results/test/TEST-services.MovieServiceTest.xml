@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="services.MovieServiceTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-12-29T15:04:04" hostname="TROYKA" time="0.426">
+  <properties/>
+  <testcase name="return_movie_find_all()" classname="services.MovieServiceTest" time="0.426"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
