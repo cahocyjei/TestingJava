@@ -3,15 +3,13 @@ package services;
 import data.MovieRepositoryJdbc;
 import model.Genre;
 import model.Movie;
-import org.junit.After;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.jdbc.datasource.init.ScriptUtils;
+
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -40,14 +38,24 @@ class MovieServiceTest {
     void return_movie_find_all() {
 
        MovieRepositoryJdbc movieRepositoryJdbc = new MovieRepositoryJdbc(jdbcTemplate);
-       List<Movie> movies = movieRepositoryJdbc.findAll();
 
-        assertThat(movies, is(Arrays.asList(new Movie(1,"Cenicienta","Colombia","1980",Genre.DRAMA,154,10),
+        assertThat(movieRepositoryJdbc.findAll(), is(Arrays.asList(new Movie(1,"Cenicienta","Colombia","1980",Genre.DRAMA,154,10),
                 new Movie(2,"Guerreros","Argentina","1970",Genre.ACTION,134,15),
                 new Movie(3,"El Capo","España","2018",Genre.ACTION,180,30),
                 new Movie(4,"Obsesion","Italia","2001",Genre.COMEDIA,220,25)
         )));
 
+    }
+
+    @Test
+    void return_movies_find_by_genre() {
+        MovieRepositoryJdbc movieRepositoryJdbc = new MovieRepositoryJdbc(jdbcTemplate);
+
+        assertThat(movieRepositoryJdbc.findByGenre(Genre.ACTION), is(Arrays.asList(
+                new Movie(2, "Guerreros", "Argentina",
+                        "1970", Genre.ACTION, 134, 15),
+                new Movie(3, "El Capo", "España",
+                        "2018", Genre.ACTION, 180, 30))));
     }
 
     @AfterEach
