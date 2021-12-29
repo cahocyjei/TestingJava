@@ -4,6 +4,9 @@ import data.MovieRepositoryJdbc;
 import model.Genre;
 import model.Movie;
 import org.junit.After;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -19,16 +22,23 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.springframework.jdbc.datasource.init.ScriptUtils.executeSqlScript;
 
 
 class MovieServiceTest {
     private DataSource dataSource;
+    private JdbcTemplate jdbcTemplate;
+
+    @BeforeEach
+    void setUp() throws SQLException {
+        dataSource = new DriverManagerDataSource("jdbc:h2:mem:test;MODE=MYSQL","sa","sa");
+        executeSqlScript(dataSource.getConnection(), new ClassPathResource("sql-scripts/test-data.sql"));
+        jdbcTemplate = new JdbcTemplate(dataSource);
+    }
 
    @Test
-    void return_movie_find_all() throws SQLException {
-       dataSource = new DriverManagerDataSource("jdbc:h2:mem:test;MODE=MYSQL","sa","sa");
-       ScriptUtils.executeSqlScript(dataSource.getConnection(), new ClassPathResource("sql-scripts/test-data.sql"));
-       JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    void return_movie_find_all() {
+
        MovieRepositoryJdbc movieRepositoryJdbc = new MovieRepositoryJdbc(jdbcTemplate);
        List<Movie> movies = movieRepositoryJdbc.findAll();
 
@@ -40,10 +50,10 @@ class MovieServiceTest {
 
     }
 
-
-    @After
-    public void tearDown() throws SQLException {
+    @AfterEach
+    void tearDown() throws SQLException {
         final Statement s = dataSource.getConnection().createStatement();
         s.execute("drop all objects delete files");
     }
+
 }
